@@ -11,13 +11,13 @@ import (
 type HttpError interface {
 	error
 	StatusCode() int
-	StatusMessage() string
+	Status() string
 }
 
 type httpErr struct {
-	code int
-	msg  string
-	err  error
+	code   int
+	status string
+	err    error
 }
 
 func (e httpErr) Error() string {
@@ -28,32 +28,34 @@ func (e httpErr) StatusCode() int {
 	return e.code
 }
 
-func (e httpErr) StatusMessage() string {
-	return e.msg
+func (e httpErr) Status() string {
+	return e.status
 }
 
-func NewHttpError(statusCode int, statusMessage string, errorMessage string) HttpError {
+func NewHttpError(statusCode int, status string, errorMessage string) HttpError {
 	return httpErr{
-		code: statusCode,
-		msg:  statusMessage,
-		err:  errors.New(errorMessage),
+		code:   statusCode,
+		status: status,
+		err:    errors.New(errorMessage),
 	}
 }
 
-func HttpErrorFromErr(err error, statusMessage string) HttpError {
+func HttpErrorFromErr(err error) HttpError {
 	if err == nil {
 		return nil
 	}
 
 	code := http.StatusInternalServerError
+	status := ""
 	httperr, _ := err.(HttpError)
 	if httperr != nil {
 		code = httperr.StatusCode()
+		status = httperr.Status()
 	}
 
 	return httpErr{
-		code: code,
-		msg:  statusMessage,
-		err:  err,
+		code:   code,
+		status: status,
+		err:    err,
 	}
 }
