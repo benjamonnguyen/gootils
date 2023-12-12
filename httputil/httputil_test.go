@@ -1,11 +1,11 @@
-package httpgootils_test
+package httputil_test
 
 import (
 	"errors"
 	"net/http"
 	"testing"
 
-	"github.com/benjamonnguyen/gootils/httpgootils"
+	"github.com/benjamonnguyen/gootils/httputil"
 )
 
 func TestHttpErrorFromErr(t *testing.T) {
@@ -13,7 +13,7 @@ func TestHttpErrorFromErr(t *testing.T) {
 	err := errors.New("")
 	wantStatusCode := http.StatusInternalServerError
 	wantStatusMessage := "msg"
-	got := httpgootils.HttpErrorFromErr(err, wantStatusMessage)
+	got := httputil.HttpErrorFromErr(err, wantStatusMessage)
 	if got.StatusCode() != wantStatusCode {
 		t.Fatalf("got StatusCode %d, want %d", got.StatusCode(), wantStatusCode)
 	}
@@ -23,8 +23,8 @@ func TestHttpErrorFromErr(t *testing.T) {
 
 	// HttpError
 	wantStatusCode = http.StatusBadRequest
-	err = httpgootils.NewHttpError(wantStatusCode, "", "")
-	got = httpgootils.HttpErrorFromErr(err, "")
+	err = httputil.NewHttpError(wantStatusCode, "", "")
+	got = httputil.HttpErrorFromErr(err, "")
 	if got.StatusCode() != wantStatusCode {
 		t.Fatalf("got StatusCode %d, want %d", got.StatusCode(), wantStatusCode)
 	}

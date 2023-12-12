@@ -1,4 +1,4 @@
-package httpgootils
+package httputil
 
 import (
 	"fmt"
