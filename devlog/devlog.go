@@ -1,10 +1,13 @@
 package devlog
 
-import "log"
+import (
+	"log"
+)
 
 var (
+	isInit    bool
 	isEnabled bool
-	logger    Logger = log.Default()
+	logger    Logger
 )
 
 type Logger interface {
@@ -12,12 +15,17 @@ type Logger interface {
 	Printf(format string, v ...any)
 }
 
-func Enable(b bool) {
-	isEnabled = b
-}
-
-func SetLogger(l Logger) {
-	logger = l
+func Init(enable bool, l Logger) {
+	if isInit {
+		panic("devlog: Init already called")
+	}
+	isInit = true
+	isEnabled = enable
+	if l != nil {
+		logger = l
+	} else {
+		logger = log.Default()
+	}
 }
 
 func Println(v ...any) {
@@ -31,3 +39,5 @@ func Printf(format string, v ...any) {
 		logger.Printf(format, v...)
 	}
 }
+
+// TODO control which packages are logged
