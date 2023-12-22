@@ -1,6 +1,9 @@
+// Package devlog provides a singleton logger to print logs during development.
+// When disabled in production environments, print methods are no-op.
 package devlog
 
 import (
+	"fmt"
 	"log"
 )
 
@@ -11,10 +14,11 @@ var (
 )
 
 type Logger interface {
-	Println(v ...any)
 	Printf(format string, v ...any)
 }
 
+// Init initializes the singleton logger and can only be called once.
+// If Logger arg is nil, the default one from the standard log package is used.
 func Init(enable bool, l Logger) {
 	if isInit {
 		panic("devlog: Init already called")
@@ -28,15 +32,15 @@ func Init(enable bool, l Logger) {
 	}
 }
 
-func Println(v ...any) {
+func Print(v ...any) {
 	if isEnabled {
-		logger.Println(v...)
+		logger.Printf("devlog: %s", fmt.Sprintln(v...))
 	}
 }
 
 func Printf(format string, v ...any) {
 	if isEnabled {
-		logger.Printf(format, v...)
+		logger.Printf("devlog: %s", fmt.Sprintf(format, v...))
 	}
 }
 
